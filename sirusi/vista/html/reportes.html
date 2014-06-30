@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Reportes</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <script type="text/javascript" src="vista/js/reportes.js"></script>
+    </head>
+     
+    <body>
+        <div id="reportes" class="box">
+            <div id="reportes_acordion"> 
+                <h3><b>Reporte prestamo Equipos por Estado de Reserva</b></h3>
+                <div>
+
+                    <select id="reportes_select_estado_equipo"  multiple="multiple"> 
+                        <option value="0">solicitado</option>
+                        <option value="1">en uso</option>
+                        <option value="2">entregado</option>
+                        <option value="3">vencido</option>
+                    </select>
+                    <button id="reportes_generar_reporte_porestado_equipo">Generar Reporte</button> 
+                </div>
+                <h3><b>Reporte prestamo Equipos por fecha de Solicitud</b></h3>
+                <div>
+                    <p>Fecha inicial: <input type="text" id="reportes_fecha_inicial_equipos"></p> 
+                    <p>Fecha final: <input type="text" id="reportes_fecha_final_equipos"></p>
+                    <button id="reportes_generar_reporte_porfecha_equipo">Generar Reporte</button> 
+                </div>
+                <h3><b>Reporte Prestamo Equipos por equipo</b></h3>
+                <div>
+                    <br><br>
+                    Equipo: <select id="reportes_equipo"></select> 
+                    <button id="reportes_generar_reporte_pornombre_equipo">Generar Reporte</button> 
+                </div>
+
+
+                
+
+                <h3><b>Reporte Reserva Salas Por Estado de Reserva</b></h3>
+                <div>
+                    <select id="reportes_select_estado_sala" name="example" multiple="multiple">
+                        <option value="0">reservada</option>
+                        <option value="1">en uso</option>
+                        <option value="2">entregada</option>
+                        <option value="3">en monitoria</option>
+                        <option value="4">fuera de servicio</option>
+                    </select>
+                    <button id="reportes_generar_reporte_porestado_sala">Generar Reporte Excel</button>
+                </div>     
+                <h3><b>Reserva de salas por fecha de Solicitud</b></h3>
+                <div>
+                    <p>Fecha inicial: <input type="text" id="reportes_fecha_inicial_sala"></p>
+                    <p>Fecha final: <input type="text" id="reportes_fecha_final_sala"></p>
+                    <button id="reportes_generar_reporte_porfecha_sala">Generar Reporte Excel</button>
+                </div>
+                
+                 <h3><b>Reporte Prestamo Salas por Nombre de Sala</b></h3>
+                <div>
+                    <br><br>
+                    Sala: <select id="reportes_sala"></select> 
+                    <button id="reportes_generar_reporte_pornombre_sala">Generar Reporte</button> 
+                </div>
+
+               
+
+            </div>
+
+
+        </div>
+    </body>
+</html>

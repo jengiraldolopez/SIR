@@ -1,0 +1,97 @@
+
+* No olvide cargar el Firebug para facilitar la depuración.
+
+* En ..\trabajito para Jenny\BD\sirusi-backup-22-06-2014.backup está la base de datos sobre la cual debe trabajar
+  Absténgase de hacer pruebas con otras bases de datos
+
+* Por defecto ingresa automáticamente con el usuario 147 y contraseña 1 (ver libreria.js línea 189)
+
+* La base de datos tiene registros de prueba. No garantizo que la estructura corresponda a la Sirusi ver1.0.0B4
+
+* Los siguientes elementos ya fueron incorporados:
+
+	* CristianRestrepo-UsuariosSesionesOk: Muy buen trabajo sobre usuarios, sesiones y cierre de sesiones temporizadas.
+	* Cortes-ReservaEquiposOk: Un muy buen módulo de reserva de equipos.
+	* CuartasCia-ReservaSalas: Muy buen trabajo de reserva de salas.
+	* AlejoCorrea....: Creo que tiene un buen desarrollo en cuando a espacios físicos.
+	* James-Monitorias-mejor: Creo que hizo un buen trabajo sobre monitorías.
+
+* FALTA INCORPORAR:
+
+	*Jenny...............: Lo que usted tenga.
+	*Ramirez2-JulianEncargado: Lo de importación y otros bichos que ud tiene actualizado.
+
+
+* ES REMOTAMENTE PROBABLE QUE DE LO SIGUIENTE HAYA ALGO RESCATABLE:
+
+RodriguezJuanD-mirarOtrasOpciones: Dejar para el final por si queda faltando algo de los otros, mirar si hay algo rescatable.
+
+Castaneda-Monitorias-basico: Dejar para el final por si queda faltando algo de los otros, mirar si hay algo rescatable.
+
+CastanoJuanCamilo-XXX: Manejo de backups, Jobs, etc. Es posible que no haya nada rescatable.
+
+JuanDiegoRodriguez-Usuarios: mmm...creo que con lo de Cristian Restrepo basta. No utilizar nada de aquí sin previa consulta
+
+
+REVISAR QUE EL SISTEMA SI CUMPLA CON LAS MEJORAS ESPECIFICADAS EN LOS SIGUIENTES COMENTARIOS
+
+* Elimine o cambie todos los avisos que eran orientadores para los estudiantes y que ahora no se requieren
+
+* Al terminar de combinar todos los archivos, elimine los comentarios irrelevantes.
+
+* RESERVA DE SALAS: tomado de la carpeta <CuartasCia-ReservaSalas>
+
+* En reserva de salas si se intenta insertar una reserva de un sólo día de una hora no la inserta si no se elige el día correcta (hoy)
+  Debería ser capaz de determinar el día actual para estos casos
+* En reserva de salas no debe aparecer el elemento "todas las salas" a la hora de agregar una reserva
+* Probar funcionamiento con la última versión de la base de datos.
+* Permitir seleccionar los días que se insertarán como reservas cuando la fecha final es mayor que la inicial
+* Para la actualización tener en cuenta que sólo se actualiza la reserva sobre la que se pulsa clic,
+  por consiguiente el multiselect debe bloquearse.
+* Para nuevas reservas, el estado debe seleccionarse de una lista desplegable donde el elemento seleccionado
+  por defecto es 0-SOLICITADA.
+* El responsable es el usuario autenticado y si se muestra en el formulario no se debe permitir el cambio.
+* El color no está funcionando en Mozilla.
+* El formulario de agregar reserva debe mostrar por defecto el estado "Solicitada"
+* Ajuste del tamaño de campos en mostrarFrmSala
+* Modificado insertarReservaSala para que no ocurra el molesto cierre del formulario cuando la inserción
+  falle y se facilite así la corrección y el reintento.
+* Validación para que no se muestre el formulario si no hay una sala seleccionada.
+* Quité unos " :selected" innecesarios de insertarReservaSala.
+  Ver importantes comentarios en dicha función
+* Los aspectos anteriores tenerlos en cuenta también para cuando se actualice una reserva y para 
+  la programación de asignaturas
+* En "Detalle de salas" al seleccionar una sede, debe mostrar sólo los bloques de dicha sede y al elegir un bloque, solo
+  las salas de dicho bloque
+
+* RESERVA DE EQUIPOS: tomado de la carpeta <Cortes-ReservaEquipos>
+
+* Verificar que las reservas de equipos no colisionen
+* Verificar si permite usuarios repetidos
+* El responsable de una reserva de equipo no se ingresa, es el usuario en curso  *****
+* Hay comentarios de métodos en PHP que no cumplen con el formato /** ... */ corregir
+* Manual de usuario paso a paso indicando la secuencia lógica de agregación de información para que el sistema funcione correctamente.
+
+* reserva de salas > programación de asignaturas falla porque Sala->insertarRestriccion() está mal implementado,
+* A partir del rango de fechas que ingresa como argumento hay que utilizar un FOR para insertar en la BD todas las reservas
+
+* En Sala hay dos métodos actualizarReserva, ¿cual es el correcto?
+
+* El responsable en reserva de equipos no se selecciona porque corresponde al usuario autenticado
+
+* Probar "Detalle de salas" y si falta algo o hay que mejorar algo, basarse en lo que hay en la carpeta "Alejo Correa"
+
+* Programación de monitores
+  - Corregir  o verficar en el grid Hora_inicio, Hora_fin
+  - Corregir o verficar  tamaño de formularios
+  - Día debe poderse elegir de un select
+  - Debe validarse a partir de public UtilConexion::getEstado()
+
+* Al parecer no hay implementado nada de Monitorías > Asignación. No recuerdo si se autorizó su omisión o 
+  la funcionalidad quedó repartida en lo que hizo James.
+
+
+
+
+
+
