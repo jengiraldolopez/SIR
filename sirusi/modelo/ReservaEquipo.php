@@ -150,10 +150,14 @@ class ReservaEquipo {
     public function actualizarReserva($argumentos) {
         extract($argumentos);
         if ($multi) {
-            UtilConexion::$pdo->exec("UPDATE reserva_equipo SET fk_equipo=$fk_equipo, fk_usuario='$fk_usuario', color='$color', estado=$estado, observaciones='$observaciones', fk_responsable='$fk_responsable' 
-                                        WHERE fk_usuario = '$fk_usuario' AND fk_responsable = '$fk_responsable'
-                                        AND TO_CHAR(fecha_inicio,'HH24:MI') = substr('$start',12,5)
-                                        AND TO_CHAR(fecha_fin,'HH24:MI') = substr('$end',12,5)");
+                $sql="UPDATE reserva_equipo SET fk_equipo=$fk_equipo, fk_usuario='$fk_usuario', color='$color', estado=$estado, observaciones='$observaciones', fk_responsable='$fk_responsable' 
+                                        WHERE (fk_usuario, fk_responsable , TO_CHAR(fecha_inicio,'HH24:MI'),TO_CHAR(fecha_fin,'HH24:MI')) =(select fk_usuario,fk_responsable,TO_CHAR(fecha_inicio,'HH24:MI'),TO_CHAR(fecha_fin,'HH24:MI') from datos_originales($idReserva));";
+//            UtilConexion::$pdo->exec("UPDATE reserva_equipo SET fk_equipo=$fk_equipo, fk_usuario='$fk_usuario', color='$color', estado=$estado, observaciones='$observaciones', fk_responsable='$fk_responsable' 
+//                                        WHERE fk_usuario = '$fk_usuario' AND fk_responsable = '$fk_responsable'
+//                                        AND TO_CHAR(fecha_inicio,'HH24:MI') = substr('$start',12,5)
+//                                        AND TO_CHAR(fecha_fin,'HH24:MI') = substr('$end',12,5)");
+           error_log("sql--->".$sql);
+            UtilConexion::$pdo->exec($sql);         
             echo UtilConexion::getEstado();
         } else {
             UtilConexion::$pdo->exec("UPDATE reserva_equipo SET fk_equipo=$fk_equipo, fecha_inicio='$start', fk_usuario='$fk_usuario', fecha_fin='$end', color='$color', estado=$estado, observaciones='$observaciones', fk_responsable='$fk_responsable' WHERE id=$idReserva");
