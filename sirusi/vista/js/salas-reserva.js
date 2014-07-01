@@ -114,24 +114,14 @@ $("#salas-reserva-fecha-inicio-reserva").datetimepicker({
 //            }, "json");
 
         },
-        eventResize: function(event, dayDelta, minuteDelta, revetFunc) {
-
-            actualizarReservaSala(event.id, event.start, event.end);
-
-
-            /*falta organizar para restriccion sala*/
-
-
-//            $.post("controlador/fachada.php",
-//                    {
-//                        clase: 'RestriccionesSalas',
-//                        oper: 'actualizarProgramacion',
-//                        allday: 'false',
-//                        idReserva: event.id,
-//                        start: "" + event.start.getFullYear() + "-" + (parseInt(event.start.getMonth()) + 1) + "-" + event.start.getDate() + " " + event.start.getHours() + ":" + event.start.getMinutes(),
-//                        end: "" + event.end.getFullYear() + "-" + (parseInt(event.end.getMonth()) + 1) + "-" + event.end.getDate() + " " + event.end.getHours() + ":" + event.end.getMinutes()
-//                                //............. 
-//                    });
+        eventResize: function(eventId, dayDelta, minuteDelta, revertFunc) {
+            $.post("controlador/fachada.php", {// probar alguna función del servidor
+                id: eventId.id,
+                clase: 'Sala',
+                oper: 'actualizarHorarioReserva',
+                start: "" + eventId.start.getFullYear() + "-" + (parseInt(eventId.start.getMonth()) + 1) + "-" + eventId.start.getDate() + " " + eventId.start.getHours() + ":" + eventId.start.getMinutes(),
+                end: "" + eventId.end.getFullYear() + "-" + (parseInt(eventId.end.getMonth()) + 1) + "-" + eventId.end.getDate() + " " + eventId.end.getHours() + ":" + eventId.end.getMinutes(),
+            }, "json");
         },
         eventMouseover: function(event, jsEvent, view) {
             $(jsEvent.target).attr('title', event.infoComplementaria);

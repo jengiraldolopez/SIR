@@ -11,19 +11,23 @@ class ReservaEquipo {
     }
 
     //Esta función se encarga de ejecutar la función almacenada, que se encarga de revisar si las fechas
-    //que se ingresan, no colisionen; además se valida si el equipo a ingresar en dichas fechas, es el mismo
+    //que se ingrean, no colisionen; además se valida si el equipo a ingresar en dichas fechas, es el mismo
     //de la reserva colisionada; para así evitar que no hayan conflictos con equipos difrerentes ingresados en fechas
     //colisionadas
     public function disponible($start, $end, $fk_equipo) {
         $disponible = FALSE;
-        if (($rs = UtilConexion::$pdo->query("select colision2('$start'::TIMESTAMP, '$end'::TIMESTAMP, $fk_equipo)"))) {
-            if (($fila = $rs->fetch(PDO::FETCH_ASSOC))) {
-                if (isset($fila['colision2'])) {
-                    $disponible = $fila['colision2'] ? TRUE : FALSE;
+        $sentencia="select equipo_disponible1('$fk_equipo','$start'::TIMESTAMP, '$end'::TIMESTAMP)";
+        if ($rs = UtilConexion::$pdo->query($sentencia)) {
+            if ($fila = $rs->fetch(PDO::FETCH_ASSOC)) {
+                if (isset($fila['equipo_disponible1'])) {
+                 $fff=$fila['equipo_disponible1'];
+                 
+                 error_log("sentencia   ".$sentencia."          fila".$fff);
+                    $disponible = $fila['equipo_disponible1'] ? TRUE : FALSE;
                 }
             }
         }
-          
+        
 
         return $disponible;
     }
@@ -47,7 +51,7 @@ class ReservaEquipo {
         $interval = DateInterval::createFromDateString('1 day');
         $fechas = new DatePeriod($inicio, $interval, $fin);
         //validamos si está disponible el equipo que ingresamos con la fecha de inicio y fin
-        if ($this->disponible($start, $end, $fk_equipo) === FALSE) {
+        if ($this->disponible($start, $end, $fk_equipo) === TRUE) {
             error_log("     Disponibleeeeeeeee");
             $sql = "INSERT INTO reserva_equipo(fecha_inicio, fecha_fin, color, fk_usuario, fk_equipo, estado, observaciones, fk_responsable) VALUES (?, ?, ?, ?, ?, ?, ?, ?) RETURNING id";
             $stmt = UtilConexion::$pdo->prepare($sql);

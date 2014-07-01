@@ -115,6 +115,7 @@ error_log($idSala);
 
     public function insertarReservaSala($argumentos) {
         extract($argumentos);
+        error_log("start--------->".$start);
         $inicio = new DateTime($start);
         $hora_inicio = $inicio->format('H:i:s');
         $fin = new DateTime($end);
@@ -142,7 +143,7 @@ error_log($idSala);
                 $dias[] = $diaSemana;
             }
             if (in_array($diaSemana, $dias)) {
-                if ($this->disponible($fk_Sala, $diaSemana, $fecha, $fecha, $hora_inicio, $hora_fin)) {
+                if ($this->estadisponible($fk_Sala, $diaSemana, $inicio, $fin, $hora_inicio, $hora_fin)) {
                     error_log("bien");
                     $ok = $stmt->execute(array($inicio, $fin, $actividad, $fk_usuario, $fk_Sala, $estado, $observaciones, $responsable, $color));
                     if (!$ok) {
@@ -220,13 +221,29 @@ error_log($idSala);
 
     function disponible($sala, $dia, $fechaInicio, $fechaFin, $horaInicio, $horaFin) {
         $disponible = FALSE;
-        error_log("SELECT horario_disponible('$sala', $dia, '$fechaInicio', '$fechaFin','$horaInicio', '$horaFin')");
-        if (($rs = UtilConexion::$pdo->query("SELECT horario_disponible('$sala', $dia, '$fechaInicio', '$fechaFin','$horaInicio', '$horaFin')"))) {
+        error_log("SELECT sala_disponible1('$sala', $dia, '$fechaInicio', '$fechaFin','$horaInicio', '$horaFin')");
+        if (($rs = UtilConexion::$pdo->query("SELECT sala_disponible1('$sala', $dia, '$fechaInicio', '$fechaFin','$horaInicio', '$horaFin')"))) {
             if (($fila = $rs->fetch(PDO::FETCH_ASSOC))) {
                 error_log(print_r($fila, 1));
                 UtilConexion::getEstado();
-                if (isset($fila['horario_disponible'])) {
-                    $disponible = $fila['horario_disponible'] ? TRUE : FALSE;
+                if (isset($fila['sala_disponible1'])) {
+                    $disponible = $fila['sala_disponible1'] ? TRUE : FALSE;
+                }
+            }
+        }
+        error_log($disponible);
+        return $disponible;
+    }
+    
+    function estadisponible($sala, $dia, $fechaInicio, $fechaFin, $horaInicio, $horaFin) {
+        $disponible = FALSE;
+        error_log("SELECT sala_disponible2('$sala', $dia, '$fechaInicio'::TIMESTAMP, '$fechaFin'::TIMESTAMP,'$horaInicio'::TIME, '$horaFin'::TIME)");
+        if (($rs = UtilConexion::$pdo->query("SELECT sala_disponible2('$sala', $dia, '$fechaInicio'::TIMESTAMP, '$fechaFin'::TIMESTAMP,'$horaInicio'::TIME, '$horaFin'::TIME)"))) {
+            if (($fila = $rs->fetch(PDO::FETCH_ASSOC))) {
+                error_log(print_r($fila, 1));
+                UtilConexion::getEstado();
+                if (isset($fila['sala_disponible2'])) {
+                    $disponible = $fila['sala_disponible2'] ? TRUE : FALSE;
                 }
             }
         }
@@ -435,15 +452,16 @@ error_log($idSala);
         }
         return $fecha_fin;
     }
+ 
 
-    public function actualizarReserva($argumentos) {
+    public function actualizarHorarioReserva($argumentos) {
         extract($argumentos);
         error_log("UPDATE reserva_sala
                      SET  fecha_inicio='$start', fecha_fin='$end' 
-                     WHERE id ='$idEvento'");
+                     WHERE id =$id");
         UtilConexion::$pdo->exec("UPDATE reserva_sala
                      SET  fecha_inicio='$start', fecha_fin='$end' 
-                     WHERE id ='$idEvento'");
+                     WHERE id =$id");
         UtilConexion::getEstado();
     }
 
