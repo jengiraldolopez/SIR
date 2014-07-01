@@ -151,6 +151,7 @@ $(function() {
             $.post("controlador/fachada.php", {// probar alguna función del servidor
                 id: eventId.id,
                 clase: 'ReservaEquipo',
+                fk_equipo: $("#equipos-reserva-equipos1").val(),
                 oper: 'actualizarHorarioReserva',
                 start: "" + eventId.start.getFullYear() + "-" + (parseInt(eventId.start.getMonth()) + 1) + "-" + eventId.start.getDate() + " " + eventId.start.getHours() + ":" + eventId.start.getMinutes(),
                 end: "" + eventId.end.getFullYear() + "-" + (parseInt(eventId.end.getMonth()) + 1) + "-" + eventId.end.getDate() + " " + eventId.end.getHours() + ":" + eventId.end.getMinutes(),
@@ -376,9 +377,10 @@ $(function() {
                 calendarioReservaEquipos.fullCalendar("refetchEvents");
                 calendarioReservaEquipos.fullCalendar("rerenderEvents");
                 $('#equipos-reserva-frmreserva').dialog('destroy');
-            } else {
-                alert('Falló la inserción del evento\nPor Favor, asegurese de ingresar correctamente\ntodos los datos Solicitados');
-            }
+              } else {
+               alert(data.mensaje); 
+                   
+        }
         }, "json");
     
 
