@@ -380,7 +380,7 @@ $("#salas-reserva-fecha-inicio-reserva").datetimepicker({
         }, "json");
     }
 
-    /* eliminar reserv_sala ya esta bueno*/
+    
     function eliminarReservaSala(eventId) {
 
         var inicio = $("#salas-reserva-fecha-inicio-reserva").val();
@@ -388,15 +388,16 @@ $("#salas-reserva-fecha-inicio-reserva").datetimepicker({
 
         $('#calendario_reserva_salas').fullCalendar('removeEvents', eventId);
         $('.tooltipevent').remove();
-//        $('#salas-reserva-frmreserva').dialog('destroy');
-        $.post("controlador/fachada.php", {// Comprobar comunicación C/S
-            clase: 'Sala', // no debería ser en la clase Utilidades sino en la clase Evento
+        $.post("controlador/fachada.php", {
+            clase: 'Sala', 
             oper: 'eliminarReservaSala',
             idReserva: eventId,
             start: inicio,
             end: fin,
+            usuario: $("#salas-reserva-solicitante").val(),
+            fk_responsable: usuario.id,
+            observaciones: $('#salas-reserva-observaciones-reserva').val(),
             seleccion: $('#salas-reserva-aplicar').prop('checked') ? 1 : 0,
-//            fk_usuario: usuario.id,
             fk_sala: $("#salas-reserva-lista-salas  :selected").val()
 
 
@@ -432,7 +433,7 @@ $("#salas-reserva-fecha-inicio-reserva").datetimepicker({
 
         $.post("controlador/fachada.php", {// Comprobar comunicación C/S
             clase: 'Sala', // no debería ser en la clase Utilidades sino en la clase Evento
-            oper: 'modificarReservaSala',
+            oper: 'actualizarReservaSala',
             idReserva: eventId,
             usuario: $("#salas-reserva-solicitante :selected").val(),
             fk_sala: $("#salas-reserva-lista-salas  :selected").val(),
@@ -442,15 +443,16 @@ $("#salas-reserva-fecha-inicio-reserva").datetimepicker({
             actividad: $("#salas-reserva-actividad-reserva").val(),
             estado: $('#salas-reserva-estado').val(),
             observaciones: $('#salas-reserva-observaciones-reserva').val(),
-            fk_responsable: $("#salas-reserva-responsable-reserva").val(),
+            fk_responsable: usuario.id,
             seleccion: $('#salas-reserva-aplicar').prop('checked') ? 1 : 0,
             color: $("#salas-reserva-etiqueta-evento").val()
                     // se pueden enviar cuantos parametros se requieran
         }, function(data) {
             if (data.ok) {
-                $('#salas-reserva-frmreserva').dialog('destroy');
-//                calendarioReservaSalas.fullCalendar("refetchEvents");
-//                calendarioReservaSalas.fullCalendar("rerenderEvents");
+               
+                calendarioReservaSalas.fullCalendar("refetchEvents");
+                calendarioReservaSalas.fullCalendar("rerenderEvents");
+                 $('#salas-reserva-frmreserva').dialog('destroy');
             } else {
                 alert(data.mensaje);
             }

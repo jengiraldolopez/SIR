@@ -132,12 +132,7 @@ class ReservaEquipo {
     public function eliminarReserva($argumentos) {
         extract($argumentos);
         if ($multi) {
-            /* error_log("select min(r.id), max(r.id) FROM reserva_equipo r WHERE r.fk_usuario = '$fk_usuario' AND r.fk_responsable = '$fk_responsable'
-              AND r.observaciones = '$observaciones' AND TO_CHAR(r.fecha_inicio,'HH24:MI') = substr('$start',12,5)
-              AND TO_CHAR(r.fecha_fin,'HH24:MI') = substr('$end',12,5)"); */
-            UtilConexion::$pdo->exec("DELETE FROM reserva_equipo r WHERE r.fk_usuario = '$fk_usuario' AND r.fk_responsable = '$fk_responsable'
-                                        AND r.observaciones = '$observaciones' AND TO_CHAR(r.fecha_inicio,'HH24:MI') = substr('$start',12,5)
-                                        AND TO_CHAR(r.fecha_fin,'HH24:MI') = substr('$end',12,5)");
+            UtilConexion::$pdo->exec("DELETE FROM reserva_equipo WHERE (fk_usuario, fk_responsable , TO_CHAR(fecha_inicio,'HH24:MI'),TO_CHAR(fecha_fin,'HH24:MI')) =(select fk_usuario,fk_responsable,TO_CHAR(fecha_inicio,'HH24:MI'),TO_CHAR(fecha_fin,'HH24:MI') from datos_originales($idReserva));");
             echo UtilConexion::getEstado();
         } else {
             UtilConexion::$pdo->exec("DELETE FROM reserva_equipo WHERE id = $idReserva");

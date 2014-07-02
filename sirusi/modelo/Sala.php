@@ -312,119 +312,148 @@ class Sala {
         }
         return $sala;
     }
-
+    
     public function eliminarReservaSala($argumentos) {
         extract($argumentos);
-
-        $fk_usuario = self::usuario($idReserva);
-
-
-
-        if ($seleccion) {
-            UtilConexion::$pdo->exec("DELETE FROM reserva_sala WHERE id = $idReserva");
-            error_log("solo un evento mas el ok $ok");
+        error_log("observaciones--->".$observaciones);
+        if ($seleccion == 1) {
+            $sql="DELETE FROM reserva_sala  WHERE (fk_sala, actividad, fk_usuario, fk_responsable , TO_CHAR(fecha_inicio,'HH24:MI'),TO_CHAR(fecha_fin,'HH24:MI')) =(select fk_sala, actividad, fk_usuario,fk_responsable,TO_CHAR(fecha_inicio,'HH24:MI'),TO_CHAR(fecha_fin,'HH24:MI') from datos_originalessala($idReserva));";
+            error_log($sql);
+            UtilConexion::$pdo->exec($sql);
+            echo UtilConexion::getEstado();
         } else {
-            error_log("eleccion $seleccion");
-            $inicio = new DateTime($start);
-            $fin = new DateTime($end);
-            $horainicio = $inicio->format('H:i:s');
-            $horafin = $fin->format('H:i:s');
-            $interval = dateInterval::createFromDateString('1 day');
-            $fechas = new DatePeriod($inicio, $interval, $fin);
-
-            $sql = "DELETE from reserva_sala where fecha_inicio=? and fecha_fin=? and fk_usuario=? and fk_sala=?";
-            $stmt = UtilConexion::$pdo->prepare($sql);
-            $mensaje = '';
-            $ok = false;
-
-            foreach ($fechas as $fecha) {
-                $fecha = $fecha->format('Y-m-d');
-                $inicio = "$fecha $horainicio";
-                $fin = "$fecha $horafin";
-                $diasemana = date("w", strtotime($fecha));
-                $ok = $stmt->execute(array($inicio, $fin, $fk_usuario, $fk_sala));
-
-                if (!$ok) {
-                    $mensaje .= " - Fallo al eliminar: $inicio - $fin\n";
-                }
-            }
+            UtilConexion::$pdo->exec("DELETE FROM reserva_sala WHERE id = $idReserva");
+            echo UtilConexion::getEstado();
         }
-        $ok = TRUE;
-        if ($mensaje) {
-            $mensaje = "se prsentaron problemas:\n$mensaje";
-            $ok = FALSE;
-        }
-
-        echo json_encode(['ok' => $ok, 'estado' => $estado]);
     }
 
-    public function modificarReservaSala($argumentos) {
+
+//    public function eliminarReservaSala($argumentos) {
+//        extract($argumentos);
+//        $fk_usuario = self::usuario($idReserva);
+//        
+//     if ($seleccion) {
+//            UtilConexion::$pdo->exec("DELETE FROM reserva_sala WHERE id = $idReserva");
+//            error_log("solo un evento mas el ok $ok");
+//        } else {
+//            error_log("eleccion $seleccion");
+//            $inicio = new DateTime($start);
+//            $fin = new DateTime($end);
+//            $horainicio = $inicio->format('H:i:s');
+//            $horafin = $fin->format('H:i:s');
+//            $interval = dateInterval::createFromDateString('1 day');
+//            $fechas = new DatePeriod($inicio, $interval, $fin);
+//
+//            $sql = "DELETE from reserva_sala where fecha_inicio=? and fecha_fin=? and fk_usuario=? and fk_sala=?";
+//            $stmt = UtilConexion::$pdo->prepare($sql);
+//            $mensaje = '';
+//            $ok = false;
+//
+//            foreach ($fechas as $fecha) {
+//                $fecha = $fecha->format('Y-m-d');
+//                $inicio = "$fecha $horainicio";
+//                $fin = "$fecha $horafin";
+//                $diasemana = date("w", strtotime($fecha));
+//                $ok = $stmt->execute(array($inicio, $fin, $fk_usuario, $fk_sala));
+//
+//                if (!$ok) {
+//                    $mensaje .= " - Fallo al eliminar: $inicio - $fin\n";
+//                }
+//            }
+//        }
+//        $ok = TRUE;
+//        if ($mensaje) {
+//            $mensaje = "se prsentaron problemas:\n$mensaje";
+//            $ok = FALSE;
+//        }
+//
+//        echo json_encode(['ok' => $ok, 'estado' => $estado]);
+//    }
+
+//    public function modificarReservaSala($argumentos) {
+//        extract($argumentos);
+//        $fk_usuario = self::usuario($idReserva);
+//        $fecha_inicio = new DateTime($start);
+//        $fecha_fin = new DateTime($end);
+//        $inicio = $fecha_inicio->format('Y-m-d H:i:s');
+//        $fin = $fecha_fin->format('Y-m-d H:i:s');
+//        $mensaje = '';
+//        error_log($seleccion);
+//        if ($seleccion == 1) {
+//            error_log("UPDATE reserva_sala SET  fecha_inicio='$inicio', fecha_fin='$fin', actividad='$actividad', 
+//                                      fk_usuario='$usuario', estado=$estado, observaciones='$observaciones', color='$color'
+//                                      WHERE id=$idReserva");
+//            UtilConexion::$pdo->exec("UPDATE reserva_sala SET  fecha_inicio='$inicio', fecha_fin='$fin', actividad='$actividad', 
+//                                      fk_usuario='$usuario', estado=$estado, observaciones='$observaciones', color='$color'
+//                                      WHERE id=$idReserva");
+//        } else {
+//
+//            $fi = self::fechaInicio($idReserva);
+//            $ff = self::fecha_fin($idReserva);
+//            $f_inicio = new DateTime($fi);
+//            $f_fin = new DateTime($ff);
+//            $inicio = new DateTime($start);
+//            $fin = new DateTime($end);
+//            $horainicio = $inicio->format('H:i:s');
+//            $horafin = $fin->format('H:i:s');
+//            $h_inicio = $fecha_inicio->format('H:i:s');
+//            $h_fin = $fecha_fin->format('H:i:s');
+//            $interval = dateInterval::createFromDateString('1 day');
+//            $fechas = new DatePeriod($inicio, $interval, $fin);
+//
+//            $sql = "UPDATE reserva_sala SET  fecha_inicio= ?, fecha_fin=?,actividad=?, fk_usuario=?, estado=?,
+//                     observaciones=?,fk_sala=? color=?
+//                                      WHERE fecha_inicio=? and fecha_fin=? and fk_usuario=? ";
+//            $stmt = UtilConexion::$pdo->prepare($sql);
+//            $ok = TRUE;
+//            $mensaje = '';
+//
+//            foreach ($fechas as $fecha) {
+//                $fecha = $fecha->format('Y-m-d');
+//                $inicio = "$fecha $horainicio";
+//                $fin = "$fecha $horafin";
+//                $f_inicio = "$fecha $h_inicio";
+//                $f_fin = "$fecha $h_fin";
+//                $diaSemana = date("w", strtotime($fecha));
+//                $ok = False;
+//
+//                if (count($dias) == 0) {
+//                    $dias[] = $diaSemana;
+//                }
+//                error_log(print_r(array($f_inicio, $f_fin, $actividad, $usuario, $estado, $observaciones, $fk_sala, $color, $f_inicio, $f_fin, $fk_usuario), 1));
+//                if (in_array($diaSemana, $dias)) {
+//                    if (!$stmt->execute(array($f_inicio, $f_fin, $actividad, $usuario, $estado, $observaciones, $fk_sala, $color, $f_inicio, $f_fin, $fk_usuario))) {
+//                        $ok = False;
+//                    }if (!$ok) {
+//                        $mensaje .= "Error al actualizar $f_inicio - $f_fin\n";
+//                    }
+//                }
+//            }
+//        }
+//        $ok = TRUE;
+//        if ($mensaje) {
+//            $mensaje = "Falló:\n$mensaje";
+//            $ok = FALSE;
+//        }
+//
+//        echo json_encode(['ok' => $ok, 'mensaje' => $mensaje]);
+//    }
+    
+    
+    public function actualizarReservaSala($argumentos) {
         extract($argumentos);
-        $fk_usuario = self::usuario($idReserva);
-        $fecha_inicio = new DateTime($start);
-        $fecha_fin = new DateTime($end);
-        $inicio = $fecha_inicio->format('Y-m-d H:i:s');
-        $fin = $fecha_fin->format('Y-m-d H:i:s');
-        $mensaje = '';
-        error_log($seleccion);
-        if ($seleccion == 1) {
-            error_log("UPDATE reserva_sala SET  fecha_inicio='$inicio', fecha_fin='$fin', actividad='$actividad', 
-                                      fk_usuario='$usuario', estado=$estado, observaciones='$observaciones', color='$color'
-                                      WHERE id=$idReserva");
-            UtilConexion::$pdo->exec("UPDATE reserva_sala SET  fecha_inicio='$inicio', fecha_fin='$fin', actividad='$actividad', 
-                                      fk_usuario='$usuario', estado=$estado, observaciones='$observaciones', color='$color'
-                                      WHERE id=$idReserva");
+        error_log("datos--> responsable--> ".$fk_responsable."seleccion  ".$seleccion);
+         if ($seleccion == 0) {
+             UtilConexion::$pdo->exec("UPDATE reserva_sala SET  actividad='$actividad', fk_usuario='$usuario', estado=$estado, observaciones='$observaciones', fk_responsable= '$fk_responsable' ,color='$color' WHERE id=$idReserva");
+            echo UtilConexion::getEstado();
+               
         } else {
-
-            $fi = self::fechaInicio($idReserva);
-            $ff = self::fecha_fin($idReserva);
-            $f_inicio = new DateTime($fi);
-            $f_fin = new DateTime($ff);
-            $inicio = new DateTime($start);
-            $fin = new DateTime($end);
-            $horainicio = $inicio->format('H:i:s');
-            $horafin = $fin->format('H:i:s');
-            $h_inicio = $fecha_inicio->format('H:i:s');
-            $h_fin = $fecha_fin->format('H:i:s');
-            $interval = dateInterval::createFromDateString('1 day');
-            $fechas = new DatePeriod($inicio, $interval, $fin);
-
-            $sql = "UPDATE reserva_sala SET  fecha_inicio= ?, fecha_fin=?,actividad=?, fk_usuario=?, estado=?,
-                     observaciones=?,fk_sala=? color=?
-                                      WHERE fecha_inicio=? and fecha_fin=? and fk_usuario=? ";
-            $stmt = UtilConexion::$pdo->prepare($sql);
-            $ok = TRUE;
-            $mensaje = '';
-
-            foreach ($fechas as $fecha) {
-                $fecha = $fecha->format('Y-m-d');
-                $inicio = "$fecha $horainicio";
-                $fin = "$fecha $horafin";
-                $f_inicio = "$fecha $h_inicio";
-                $f_fin = "$fecha $h_fin";
-                $diaSemana = date("w", strtotime($fecha));
-                $ok = False;
-
-                if (count($dias) == 0) {
-                    $dias[] = $diaSemana;
-                }
-                error_log(print_r(array($f_inicio, $f_fin, $actividad, $usuario, $estado, $observaciones, $fk_sala, $color, $f_inicio, $f_fin, $fk_usuario), 1));
-                if (in_array($diaSemana, $dias)) {
-                    if (!$stmt->execute(array($f_inicio, $f_fin, $actividad, $usuario, $estado, $observaciones, $fk_sala, $color, $f_inicio, $f_fin, $fk_usuario))) {
-                        $ok = False;
-                    }if (!$ok) {
-                        $mensaje .= "Error al actualizar $f_inicio - $f_fin\n";
-                    }
-                }
-            }
+             $sql="UPDATE reserva_sala SET  actividad='$actividad',  fk_usuario='$usuario', estado=$estado, observaciones='$observaciones', fk_responsable= '$fk_responsable' ,color='$color' 
+                                        WHERE (fk_sala, actividad, fk_usuario, fk_responsable , TO_CHAR(fecha_inicio,'HH24:MI'),TO_CHAR(fecha_fin,'HH24:MI')) =(select fk_sala, actividad, fk_usuario,fk_responsable,TO_CHAR(fecha_inicio,'HH24:MI'),TO_CHAR(fecha_fin,'HH24:MI') from datos_originalessala($idReserva));";
+           error_log("sql--->".$sql);
+            UtilConexion::$pdo->exec($sql);         
+            echo UtilConexion::getEstado();
         }
-        $ok = TRUE;
-        if ($mensaje) {
-            $mensaje = "Falló:\n$mensaje";
-            $ok = FALSE;
-        }
-
-        echo json_encode(['ok' => $ok, 'mensaje' => $mensaje]);
     }
 
     public function modificarRestriccion($argumentos) {
