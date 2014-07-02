@@ -42,6 +42,12 @@ $("#salas-reserva-fecha-inicio-reserva").datetimepicker({
         clase: 'Usuario',
         oper: 'getSelect'
     });
+    
+    
+    $("#salas-reserva-solicitante").getSelectList({clase: 'Usuario', oper: 'getSelect'}).change(function() {
+        idUsuario = $(this).val();
+    });
+    $("#salas-reserva-solicitante").change(0);
 
     $("#salas-reserva-solicitante").getSelectList({
         clase: 'Usuario',
@@ -273,7 +279,7 @@ $("#salas-reserva-fecha-inicio-reserva").datetimepicker({
     }
 
     function inicializarFrmSala(start, end) {
-        $("#salas-reserva-solicitante :selected").text("");
+        $("#salas-reserva-solicitante").val(0);
         $("#salas-reserva-actividad-reserva").val("");
         $("#salas-reserva-responsable-reserva").val(usuario.nombre);
         $("salas-reserva-estado").val(0).change();
@@ -283,7 +289,7 @@ $("#salas-reserva-fecha-inicio-reserva").datetimepicker({
         $("#salas-restriccion-hora-inicio").val(strHora(start));
         $("#salas-restriccion-hora-fin").val(strHora(end));
         $("#salas-restriccion-modalidad").val(0).change();
-        $("#salas-restriccion-usuario :selected").text("");
+        $("#salas-restriccion-usuario").val(0);
         $("#salas-restriccion-grupo :selected").text("");
 
     }
