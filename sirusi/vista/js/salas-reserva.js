@@ -22,11 +22,11 @@ $(function() { // inicio del JS que le hace todo el trabajo sucio al HTML
         selectedText: "# de # seleccionados"
     });
 
-$("#salas-reserva-fecha-inicio-reserva").datetimepicker({
+    $("#salas-reserva-fecha-inicio-reserva").datetimepicker({
         format: 'Y-m-d H:i'
-        
+
     });
-    
+
     $("#salas-reserva-fecha-fin-reserva").datetimepicker({
         format: 'Y-m-d H:i'
     });
@@ -42,8 +42,8 @@ $("#salas-reserva-fecha-inicio-reserva").datetimepicker({
         clase: 'Usuario',
         oper: 'getSelect'
     });
-    
-    
+
+
     $("#salas-reserva-solicitante").getSelectList({clase: 'Usuario', oper: 'getSelect'}).change(function() {
         idUsuario = $(this).val();
     });
@@ -252,7 +252,7 @@ $("#salas-reserva-fecha-inicio-reserva").datetimepicker({
                         ficha = $("#salas-reserva-tabs").tabs("option", "active");
                         if (ficha === 0) { // tab reserva de salas
                             modificarReservaSala(eventId, start, end, allDay);
-                        } 
+                        }
                         else if (ficha === 1) { // tab programación de asignaturas 
                             modificarProgramacionSala(eventId, start, end, allDay);
                         }
@@ -297,25 +297,26 @@ $("#salas-reserva-fecha-inicio-reserva").datetimepicker({
     function insertarReservaSala(allDay) {
         var inicio = $("#salas-reserva-fecha-inicio-reserva").val();
         var fin = $("#salas-reserva-fecha-fin-reserva").val();
-     if(inicio>=fin){
-         
-         alert('la fecha inicio debe ser menor que la fecha fin');
-         return;
-     }
-        
-        
+        if (inicio >= fin) {
+
+            alert('la fecha inicio debe ser menor que la fecha fin');
+            return;
+        }
+
+
         var solicitante = $("#salas-reserva-solicitante").val();
         if (solicitante === '0') {
             alert('Por favor seleccione quien solicita');
             return;
         }
 
-        
+
         var dias = listaDias.multiselect("getChecked").map(function() {
             return this.value;
         }).get();
 
-        $.post("controlador/fachada.php", {
+
+        var parametros = {
             clase: 'Sala',
             oper: 'insertarReservaSala',
             fk_usuario: $("#salas-reserva-solicitante").val(),
@@ -327,26 +328,26 @@ $("#salas-reserva-fecha-inicio-reserva").datetimepicker({
             estado: $('#salas-reserva-estado').val(),
             observaciones: $('#salas-reserva-observaciones-reserva').val(),
             responsable: usuario.id,
-            color: $('#salas-reserva-etiqueta-evento').val()
+            color: $('#salas-reserva-etiqueta-evento').val(),
+            obligarEjecucion: false
 
-        }, function(data) {
+        };
 
+        $.post("controlador/fachada.php", parametros, function(data) {
+            console.log(data)
             if (data.ok) {
-
-                // OJO cuando end > start habrá que utilizar $.each(data, function(index, event) {..}); para poder mostrar todos los eventos
                 $('#salas-reserva-frmreserva').dialog('destroy');
                 calendarioReservaSalas.fullCalendar("refetchEvents");
                 calendarioReservaSalas.fullCalendar("rerenderEvents");
-//                mostrarEvento(data.id, inicio, fin, allDay);
-
-
             } else {
-
-                alert(data.mensaje);
-
+                console.log('falso')
+                var confirma = confirm(data.mensaje + 'aún así quiere ingresarlos?');
+                if (confirma) {
+                    parametros.obligarEjecucion = true;
+                    $.post("controlador/fachada.php", parametros);
+                }
+//                alert(data.mensaje);
             }
-
-
         }, "json");
     }
 
@@ -354,11 +355,11 @@ $("#salas-reserva-fecha-inicio-reserva").datetimepicker({
     function insertarRestriccionSala(allDay) {
         var inicio = $("#salas-restriccion-hora-inicio").val();
         var fin = $("#salas-restriccion-hora-fin").val();
-        if(inicio>=fin){
-         
-         alert('la fecha inicio debe ser menor que la fecha fin');
-         return;
-     }
+        if (inicio >= fin) {
+
+            alert('la fecha inicio debe ser menor que la fecha fin');
+            return;
+        }
 
         $.post("controlador/fachada.php", {
             clase: 'Sala',
@@ -386,7 +387,7 @@ $("#salas-reserva-fecha-inicio-reserva").datetimepicker({
         }, "json");
     }
 
-    
+
     function eliminarReservaSala(eventId) {
 
         var inicio = $("#salas-reserva-fecha-inicio-reserva").val();
@@ -395,7 +396,7 @@ $("#salas-reserva-fecha-inicio-reserva").datetimepicker({
         $('#calendario_reserva_salas').fullCalendar('removeEvents', eventId);
         $('.tooltipevent').remove();
         $.post("controlador/fachada.php", {
-            clase: 'Sala', 
+            clase: 'Sala',
             oper: 'eliminarReservaSala',
             idReserva: eventId,
             start: inicio,
@@ -428,11 +429,11 @@ $("#salas-reserva-fecha-inicio-reserva").datetimepicker({
     function modificarReservaSala(eventId, start, end) {
         var inicio = $("#salas-reserva-fecha-inicio-reserva").val();
         var fin = $("#salas-reserva-fecha-fin-reserva").val();
-        if(inicio>=fin){
-         
-         alert('la fecha inicio debe ser menor que la fecha fin');
-         return;
-     }
+        if (inicio >= fin) {
+
+            alert('la fecha inicio debe ser menor que la fecha fin');
+            return;
+        }
         var dias = listaDias.multiselect("getChecked").map(function() {
             return this.value;
         }).get();
@@ -455,10 +456,10 @@ $("#salas-reserva-fecha-inicio-reserva").datetimepicker({
                     // se pueden enviar cuantos parametros se requieran
         }, function(data) {
             if (data.ok) {
-               
+
                 calendarioReservaSalas.fullCalendar("refetchEvents");
                 calendarioReservaSalas.fullCalendar("rerenderEvents");
-                 $('#salas-reserva-frmreserva').dialog('destroy');
+                $('#salas-reserva-frmreserva').dialog('destroy');
             } else {
                 alert(data.mensaje);
             }
@@ -470,12 +471,12 @@ $("#salas-reserva-fecha-inicio-reserva").datetimepicker({
     function modificarProgramacionSala(eventId, start, end) {
         var inicio = $("#salas-restriccion-hora-inicio").val();
         var fin = $("#salas-restriccion-hora-fin").val();
-        if(inicio>=fin){
-         
-         alert('la fecha inicio debe ser menor que la fecha fin');
-         return;
-     }
-        
+        if (inicio >= fin) {
+
+            alert('la fecha inicio debe ser menor que la fecha fin');
+            return;
+        }
+
         $.post("controlador/fachada.php", {// Comprobar comunicación C/S
             clase: 'Sala', // no debería ser en la clase Utilidades sino en la clase Evento
             oper: 'modificarRestriccion',
@@ -483,17 +484,17 @@ $("#salas-reserva-fecha-inicio-reserva").datetimepicker({
             fk_usuario: $("#salas-restriccion-usuario").val(),
             fk_sala: $("#salas-reserva-lista-salas").val(),
             start: inicio,
-            grupo:$("#salas-restriccion-grupo").val(),
-            end:fin, 
+            grupo: $("#salas-restriccion-grupo").val(),
+            end: fin,
             modalidad: $("#salas-restriccion-modalidad").val(),
             dia: $("#salas-restriccion-dia").val(),
             color: $("#salas-reserva-etiqueta-evento").val()
-            
-            
-                       
-            // se pueden enviar cuantos parametros se requieran
-        }, 
-           function(data) {
+
+
+
+                    // se pueden enviar cuantos parametros se requieran
+        },
+        function(data) {
             if (data.ok) {
                 $('#salas-reserva-frmreserva').dialog('destroy');
                 calendarioReservaSalas.fullCalendar("refetchEvents");
@@ -502,7 +503,7 @@ $("#salas-reserva-fecha-inicio-reserva").datetimepicker({
                 alert(data.mensaje);
             }
 
-        
+
         }, "json");
     }
 

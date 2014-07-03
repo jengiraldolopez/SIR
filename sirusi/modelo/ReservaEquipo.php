@@ -155,7 +155,7 @@ class ReservaEquipo {
             UtilConexion::$pdo->exec($sql);         
             echo UtilConexion::getEstado();
         } else {
-            UtilConexion::$pdo->exec("UPDATE reserva_equipo SET fk_equipo=$fk_equipo, fecha_inicio='$start', fk_usuario='$fk_usuario', fecha_fin='$end', color='$color', estado=$estado, observaciones='$observaciones', fk_responsable='$fk_responsable' WHERE id=$idReserva");
+            UtilConexion::$pdo->exec("UPDATE reserva_equipo SET fk_equipo=$fk_equipo, fk_usuario='$fk_usuario', color='$color', estado=$estado, observaciones='$observaciones', fk_responsable='$fk_responsable' WHERE id=$idReserva");
             echo UtilConexion::getEstado();
         }
     }
