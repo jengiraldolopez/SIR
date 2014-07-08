@@ -291,6 +291,7 @@ $(function() { // inicio del JS que le hace todo el trabajo sucio al HTML
         $("#salas-restriccion-modalidad").val(0).change();
         $("#salas-restriccion-usuario").val(0);
         $("#salas-restriccion-grupo :selected").text("");
+        
 
     }
 
@@ -339,15 +340,30 @@ $(function() { // inicio del JS que le hace todo el trabajo sucio al HTML
                 $('#salas-reserva-frmreserva').dialog('destroy');
                 calendarioReservaSalas.fullCalendar("refetchEvents");
                 calendarioReservaSalas.fullCalendar("rerenderEvents");
+
             } else {
                 console.log('falso')
                 var confirma = confirm(data.mensaje + 'aún así quiere ingresarlos?');
                 if (confirma) {
                     parametros.obligarEjecucion = true;
-                    $.post("controlador/fachada.php", parametros);
+                     $.post("controlador/fachada.php", parametros, function(data) {
+                         
+                         if(data.ok){
+                             
+                             calendarioReservaSalas.fullCalendar("refetchEvents");
+                             calendarioReservaSalas.fullCalendar("rerenderEvents");
+                             $('#salas-reserva-frmreserva').dialog('destroy');
+                         }
+                    }, "json");
+                    
                 }
-//                alert(data.mensaje);
+
             }
+                        
+                        calendarioReservaSalas.fullCalendar("refetchEvents");
+                        calendarioReservaSalas.fullCalendar("rerenderEvents");
+                        $('#salas-reserva-frmreserva').dialog('destroy');
+
         }, "json");
     }
 

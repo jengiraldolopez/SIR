@@ -20,9 +20,6 @@ class ReservaEquipo {
         if ($rs = UtilConexion::$pdo->query($sentencia)) {
             if ($fila = $rs->fetch(PDO::FETCH_ASSOC)) {
                 if (isset($fila['equipo_disponible1'])) {
-                    $fff = $fila['equipo_disponible1'];
-
-                    error_log("sentencia   " . $sentencia . "          fila" . $fff);
                     $disponible = $fila['equipo_disponible1'] ? TRUE : FALSE;
                 }
             }
@@ -51,22 +48,15 @@ class ReservaEquipo {
         $interval = DateInterval::createFromDateString('1 day');
         $fechas = new DatePeriod($inicio, $interval, $fin);
 
+        if ($obligarEjecucion==="false") {
+         UtilConexion::$pdo->beginTransaction();
+        }
+        
         $sql = "INSERT INTO reserva_equipo(fecha_inicio, fecha_fin, color, fk_usuario, fk_equipo, estado, observaciones, fk_responsable) VALUES (?, ?, ?, ?, ?, ?, ?, ?) RETURNING id";
         $stmt = UtilConexion::$pdo->prepare($sql);
         $mensaje = '';
         
-        foreach ($fechas as $fecha) {
-            $fecha = $fecha->format('Y-m-d');
-            $inicio = "$fecha $horaInicio";
-            $fin = "$fecha $horaFin";
-            $ok=true;
-        if ($this->disponible($inicio, $fin, $fk_equipo) === false) {
-        $ok=false;
-        $mensaje="no se puede realizar porq hay cruce de horarios en :\n$inicio - $fin";
-        echo json_encode(['ok' => $ok, 'mensaje' => $mensaje]);
-        return;
-        }
-       }
+
         foreach ($fechas as $fecha) {
             $fecha = $fecha->format('Y-m-d');
             $inicio = "$fecha $horaInicio";
@@ -76,24 +66,41 @@ class ReservaEquipo {
                 $dias[] = $diaSemana;
             }
             if (in_array($diaSemana, $dias)) {
-                //validamos si está disponible el equipo que ingresamos con la fecha de inicio y fin
-//                if ($this->disponible($inicio, $fin, $fk_equipo) === TRUE) {
+//                validamos si está disponible el equipo que ingresamos con la fecha de inicio y fin
+                if ($this->disponible($inicio, $fin, $fk_equipo) === TRUE) {
 //                    error_log("     Disponibleeeeeeeee");
                     $ok = $stmt->execute(array($inicio, $fin, $color, $fk_usuario, $fk_equipo, $estado, $observaciones, $fk_responsable));
-//                    if (!$ok) {
-//                        $mensaje .= "$inicio - $fin\n";
-//                    }
-//                } else {
-//                    $mensaje .= "$inicio - $fin\n";
-//                    $ok = FALSE;
-//                }
+                    if (!$ok) {
+                        $mensaje .= "$inicio - $fin\n";
+                    }
+                } else {
+                    $mensaje .= "$inicio - $fin\n";
+                    $ok = FALSE;
+                }
             }
         }
         $ok = TRUE;
-//        if ($mensaje) {
-//            $mensaje = "Falló la inserción de los siguientes registros:\n$mensaje";
-//            $ok = FALSE;
-//        }
+        if ($mensaje) {
+            $mensaje = "Falló la inserción de los siguientes registros:\n$mensaje";
+            $ok = FALSE;
+        }
+        
+        if ($obligarEjecucion==="false") {
+               error_log("entra segundo if de NO obligar ejecucion");
+            if ($mensaje) {
+//                
+                UtilConexion::$pdo->rollBack();
+                
+            } else {
+//               
+                UtilConexion::$pdo->commit();
+            }
+        }
+        else{
+            
+            $ok=true;
+            $mensaje='';
+        }
 
         echo json_encode(['ok' => $ok, 'mensaje' => $mensaje]);
     }

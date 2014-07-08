@@ -9,7 +9,7 @@ var usuario = {};
 
 $(document).on('ready', function() {
 
-    anchoContenedor = $('#columnaContenido').outerWidth() * 0.94;
+//    anchoContenedor = $('#columnaContenido').outerWidth() * 0.94;
 
     $('#index-frmautentica').dialog({
         autoOpen: true,
@@ -51,16 +51,28 @@ $(document).on('ready', function() {
     });
     $(".ui-dialog, .ui-dialog-titlebar, .ui-dialog-buttonpane").css({"font-size": "95%"});
 
-    $(window).on('resize', function() {
-        anchoContenedor = $('#columnaContenido').outerWidth() * 0.94;
-        if (grid = $('.ui-jqgrid-btable:visible')) {
-            grid.each(function(index) {
-                var gridId = $(this).attr('id');
-                gridParentWidth = $('#gbox_' + gridId).parent().width() * 0.99;
-                jQuery('#' + gridId).setGridWidth(gridParentWidth);
-            });
-        }
-    });
+//    $(window).on('resize', function() {
+//        anchoContenedor = $('#columnaContenido').outerWidth() * 0.94;
+//        if (grid = $('.ui-jqgrid-btable:visible')) {
+//            grid.each(function(index) {
+//                var gridId = $(this).attr('id');
+//                gridParentWidth = $('#gbox_' + gridId).parent().width() * 0.99;
+//                jQuery('#' + gridId).setGridWidth(gridParentWidth);
+//            });
+//        }
+//    });
+
+anchoContenedor = $('#contentcolumn').outerWidth() * 0.90;
+      $(window).on('resize', function() {
+          anchoContenedor = $('#contentcolumn').outerWidth() * 0.90;
+          if (grid = $('.ui-jqgrid-btable')) {
+              grid.each(function(index) {
+                 var gridId = $(this).attr('id');
+                 gridParentWidth = $('#gbox_' + gridId).parent().width() * 0.99;
+                jQuery('#' + gridId).setGridWidth(gridParentWidth);             });
+          }
+     });
+
 
     /**
      * Crear el menú de la aplicación
@@ -409,4 +421,30 @@ function restablecer() {
         alert("Error al restablecer las contraseñas");
     });
     return opciones;
-}
+    }
+ /**
+  * Calcula el ancho inicial para un objeto jqGrid
+  * @param {Object} columnas
+  * @returns {Integer|anchoColumnas|ColsGridContenedor|Number|ancho}
+  */
+ function calcularAnchoGrid(columnas) {
+     var anchoGrid = anchoContenedor;
+     if ((typeof columnas === "object") && (columnas !== null)) {
+         var anchoColumnas = 63; // tiene en cuenta el ancho aproximado de los bordes izquierdo y derecho del grid
+         for (var i in columnas.datos) {
+             anchoColumnas += columnas.datos[i].width;
+         }
+         if (anchoColumnas < anchoContenedor) {
+             // aumentar un poco el ancho a cada columna hasta copar el ancho del grid
+             var aumento = (anchoContenedor - anchoColumnas) / columnas.datos.length;
+             for (var i in columnas.datos) {
+                 columnas.datos[i].width = columnas.datos[i].width + aumento;
+             }
+         }
+     } else {
+        alert('Se espera un objeto que tenga las definiciones para colNames y colModel');
+     }
+     return anchoGrid;
+ }
+
+
