@@ -114,7 +114,6 @@ class Sala {
 
     public function insertarReservaSala($argumentos) {
         extract($argumentos);
-
         $inicio = new DateTime($start);
         $hora_inicio = $inicio->format('H:i:s');
         $fin = new DateTime($end);
@@ -144,18 +143,16 @@ class Sala {
                 $dias[] = $diaSemana;
             }
             if (in_array($diaSemana, $dias)) {
-                if ($this->estadisponible($fk_Sala, $diaSemana, $inicio, $fin, $hora_inicio, $hora_fin)) {
+                if ($this->nocruzarestriccion($fk_Sala, $diaSemana, $inicio, $fin, $hora_inicio, $hora_fin) && $this->nocruzasala($fk_Sala, $diaSemana, $inicio, $fin, $hora_inicio, $hora_fin) ) {
 //                    error_log("esta disponible");
                     $ok = $stmt->execute(array($inicio, $fin, $actividad, $fk_usuario, $fk_Sala, $estado, $observaciones, $responsable, $color));
                     if (!$ok) {
                         $mensaje .="$inicio--$fin\n";
 //                        error_log("no inserta");
-                    } else {
-                        error_log("ok");
-                    }
+                    } 
                 } else {
                     $mensaje .="$inicio--$fin\n";
-                  
+                    $ok = FALSE;
                 }
             }
         }  //fin de for
@@ -259,18 +256,34 @@ class Sala {
         return $disponible;
     }
 
-    function estadisponible($sala, $dia, $fechaInicio, $fechaFin, $horaInicio, $horaFin) {
+    function nocruzarestriccion($sala, $dia, $fechaInicio, $fechaFin, $horaInicio, $horaFin) {
         $disponible = FALSE;
-//        error_log("SELECT sala_disponible2('$sala', $dia, '$fechaInicio'::TIMESTAMP, '$fechaFin'::TIMESTAMP,'$horaInicio'::TIME, '$horaFin'::TIME)");
-        if ($rs = UtilConexion::$pdo->query("SELECT sala_disponible2('$sala', $dia, '$fechaInicio'::TIMESTAMP, '$fechaFin'::TIMESTAMP,'$horaInicio'::TIME, '$horaFin'::TIME)")) {
+        $sentencia="SELECT sala_disponible3('$sala', $dia, '$fechaInicio'::TIMESTAMP, '$fechaFin'::TIMESTAMP,'$horaInicio'::TIME, '$horaFin'::TIME)";
+        error_log($sentencia);
+        if ($rs = UtilConexion::$pdo->query("SELECT sala_disponible3('$sala', $dia, '$fechaInicio'::TIMESTAMP, '$fechaFin'::TIMESTAMP,'$horaInicio'::TIME, '$horaFin'::TIME)")) {
             if ($fila = $rs->fetch(PDO::FETCH_ASSOC)) {
                 UtilConexion::getEstado();
-                if (isset($fila['sala_disponible2'])) {
-                    $disponible = $fila['sala_disponible2'] ? TRUE : FALSE;
+                if (isset($fila['sala_disponible3'])) {
+                    $disponible = $fila['sala_disponible3'] ? TRUE : FALSE;
                 }
             }
         }
-        error_log("disponibleeeeee" . $disponible);
+        
+        return $disponible;
+    }
+    function nocruzasala($sala, $dia, $fechaInicio, $fechaFin, $horaInicio, $horaFin) {
+        $disponible = FALSE;
+        $sentencia="SELECT sala_disponible4('$sala', $dia, '$fechaInicio'::TIMESTAMP, '$fechaFin'::TIMESTAMP,'$horaInicio'::TIME, '$horaFin'::TIME)";
+        error_log($sentencia);
+        if ($rs = UtilConexion::$pdo->query("SELECT sala_disponible4('$sala', $dia, '$fechaInicio'::TIMESTAMP, '$fechaFin'::TIMESTAMP,'$horaInicio'::TIME, '$horaFin'::TIME)")) {
+            if ($fila = $rs->fetch(PDO::FETCH_ASSOC)) {
+                UtilConexion::getEstado();
+                if (isset($fila['sala_disponible4'])) {
+                    $disponible = $fila['sala_disponible4'] ? TRUE : FALSE;
+                }
+            }
+        }
+        
         return $disponible;
     }
 
