@@ -4,37 +4,29 @@
  */
 $(function() {
     var jqGridMonitores;
+    var idSala=0;
     crearTablaMonitores();
 
     function crearTablaMonitores() {
-        var columnas = {'cabeceras': ['Monitor', 'Día', 'Hora inicio', 'Hora fin'],
-            'datos': [
-                {name: 'fk_usuario_monitor', index: 'fk_usuario_monitor', width: 300, editable: false, editoptions: {size: 37,
+        var columnas = {'cabeceras': ['fk_usuario_monitor', 'dia', 'hora_inicio', 'hora_fin'],
+           'datos': [
+                {name: 'fk_usuario_monitor', index: 'fk_usuario_monitor', width: 250, editable: false, editoptions: {size: 37,
                         dataInit: function(elemento) {
                             $(elemento).width(282)
                         }
                     }},
-                           {name: 'fk_equipo', index: 'fk_equipo', hidden: false, width: 150, editable: true, edittype: 'select',
-                    editoptions: {
-                        dataInit: function(elemento) {
-                            $(elemento).width(292)
-                        },
-                        value: getElementos({'clase': 'Monitorias', 'oper': 'getListah', foranea: idSala}),
-                        defaultValue: idSala
+                {name: 'dia', index: 'dia', width: 150, editable: true,edittype:'select', editoptions: {value:{1:'lunes',2:'martes',3:'miercoles',4:'jueves',5:'viernes',6:'sabado',7:'domingo'},
+                        dataInit: function(elemento) {$(elemento).width(200)
+                             }
+                        
+                        
                     }},
-                {name: 'dia', index: 'dia', width: 200, editable: true, edittype: 'select', editoptions: {value: {1: 'lunes', 2: 'martes', 3: 'miercoles', 4: 'jueves', 5: 'viernes', 6: 'sabado', 7: 'domingo'},
-                        dataInit: function(elemento) {
-                            $(elemento).width(200)
-                        }
-
-
-                    }},
-                {name: 'hora_inicio', index: 'hora_inicio', width: 200, editable: true, editoptions: {size: 37,
+                {name: 'hora_inicio', index: 'hora_inicio', width: 100, editable: true, editoptions: {size: 37,
                         dataInit: function(elemento) {
                             $(elemento).width(282)
                         }
                     }},
-                {name: 'hora_fin', index: 'hora_fin', width: 200, editable: true, editoptions: {size: 37,
+                {name: 'hora_fin', index: 'hora_fin', width: 100, editable: true, editoptions: {size: 37,
                         dataInit: function(elemento) {
                             $(elemento).width(282)
                         }

@@ -65,37 +65,36 @@ $(function() {
 
     function crearTablaEquipos() {
         var columnas = {
-            'cabeceras': ['Usuario', 'Equipo', 'Inicia','Finaliza','Observaciones'],
+            'cabeceras': ['nombre', 'fk_equipoo', 'inicia','finaliza','observaciones'],
             'datos': [
-                {name: 'nombre', index: 'nombre', width: 300, align: 'center', editable: true, editoptions: {size: 37,
+                {name: 'nombre', index: 'nombre', width: 200, align: 'center', editable: true, editoptions: {size: 37,
                         dataInit: function(elemento) {
                             $(elemento).width(282)
                         }
                     }},
-                {name: 'fk_equipo', index: 'fk_equipo',hidden: false, width:150, editable: true, edittype:'select', 
+                {name: 'fk_equipo', index: 'fk_equipo',hidden: false, width:100, editable: true, edittype:'select', 
                         editoptions: {
                         dataInit: function(elemento) { $(elemento).width(292)},
                         value   : getElementos({'clase': 'Monitorias', 'oper': 'getListah',foranea: idSala}),
                         defaultValue: idSala
                     }},
                         
-                {name: 'inicia', index: 'inicia', width: 150, editable: true, editoptions: {size: 37,
+                {name: 'inicia', index: 'inicia', width: 100, editable: true, editoptions: {size: 37,
                         dataInit: function(elemento) {
                             $(elemento).width(282)
                         }
                     }},
-                        {name: 'finaliza', index: 'finaliza', width: 150, editable: true, editoptions: {size: 37,
+                        {name: 'finaliza', index: 'finaliza', width: 100, editable: true, editoptions: {size: 37,
                         dataInit: function(elemento) {
                             $(elemento).width(282)
                         }
                     }},
-                        {name: 'observaciones', index: 'observaciones', width: 300, editable: true, editoptions: {size: 37,
+                        {name: 'observaciones', index: 'observaciones', width: 100, editable: true, editoptions: {size: 37,
                         dataInit: function(elemento) {
                             $(elemento).width(282)
                         }
                     }}
-            ]
-};
+            ]};
         var hora = $('#hora').val(), fecha = $('#fecha').val();
         console.log(idSala)
         if (jqGridEquipos) { // si el grid ya fue creado, no se re-crea sino que se actualizan los parametros y se recarga 
@@ -217,27 +216,27 @@ $(function() {
     
        var columnas= { 'cabeceras': ['Monitores', 'Salas', 'Fecha', 'Hora inicio', 'Hora fin'],
             'datos': [
-                {name: 'nombreu', index: 'nombreu', width: 650, align: 'center', editable: true, editoptions: {size: 37,
+                {name: 'nombreu', index: 'nombreu', width: 300, align: 'center', editable: true, editoptions: {size: 37,
                         dataInit: function(elemento) {
                             $(elemento).width(282)
                         }
                     }},
-                {name: 'nombres', index: 'nombres', width: 550, editable: true, editoptions: {size: 37,
+                {name: 'nombres', index: 'nombres', width: 250, editable: true, editoptions: {size: 37,
                         dataInit: function(elemento) {
                             $(elemento).width(282)
                         }
                     }},
-                {name: 'fecha', index: 'fecha', width: 200, editable: true, editoptions: {size: 37,
+                {name: 'fecha', index: 'fecha', width: 100, editable: true, editoptions: {size: 37,
                         dataInit: function(elemento) {
                             $(elemento).width(282)
                         }
                     }},
-                {name: 'horai', index: 'horai', width: 200, editable: true, editoptions: {size: 37,
+                {name: 'horai', index: 'horai', width: 100, editable: true, editoptions: {size: 37,
                         dataInit: function(elemento) {
                             $(elemento).width(282)
                         }
                     }},
-                {name: 'horaf', index: 'horaf', width: 200, editable: true, editoptions: {size: 37,
+                {name: 'horaf', index: 'horaf', width: 100, editable: true, editoptions: {size: 37,
                         dataInit: function(elemento) {
                             $(elemento).width(282)
                         }
@@ -277,7 +276,7 @@ $(function() {
                 desd:desde,
                 hasta:hasta
             },
-//           colNames: columnas.cabeceras,  //  observe que ahora se utilizan las cabeceras definidas en el objeto columnas.
+           colNames: columnas.cabeceras,  //  observe que ahora se utilizan las cabeceras definidas en el objeto columnas.
             colModel: columnas.datos,           //  observe que ahora se utilizan los datos definidos en el objeto columnas.
             autowidth: false,                            //  OJO
             shrinkToFit: false,                          //  observe

@@ -62,7 +62,7 @@ $(document).on('ready', function() {
 //        }
 //    });
 
-anchoContenedor = $('#contentcolumn').outerWidth() * 0.90;
+//anchoContenedor = $('#contentcolumn').outerWidth() * 0.90;
       $(window).on('resize', function() {
           anchoContenedor = $('#contentcolumn').outerWidth() * 0.90;
           if (grid = $('.ui-jqgrid-btable')) {
@@ -71,7 +71,7 @@ anchoContenedor = $('#contentcolumn').outerWidth() * 0.90;
                  gridParentWidth = $('#gbox_' + gridId).parent().width() * 0.99;
                 jQuery('#' + gridId).setGridWidth(gridParentWidth);             });
           }
-     });
+     }).resize();
 
 
     /**

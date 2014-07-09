@@ -343,6 +343,7 @@ $(function() { // inicio del JS que le hace todo el trabajo sucio al HTML
 
             } else {
                 console.log('falso')
+                if(dias.length>1){
                 var confirma = confirm(data.mensaje + 'aún así quiere ingresarlos?');
                 if (confirma) {
                     parametros.obligarEjecucion = true;
@@ -357,7 +358,11 @@ $(function() { // inicio del JS que le hace todo el trabajo sucio al HTML
                     }, "json");
                     
                 }
-
+                }
+                else{
+                    alert("no se pudo adicionar");
+                    
+                }
             }
                         
                         calendarioReservaSalas.fullCalendar("refetchEvents");

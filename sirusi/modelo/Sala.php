@@ -144,11 +144,11 @@ class Sala {
             }
             if (in_array($diaSemana, $dias)) {
                 if ($this->nocruzarestriccion($fk_Sala, $diaSemana, $inicio, $fin, $hora_inicio, $hora_fin) && $this->nocruzasala($fk_Sala, $diaSemana, $inicio, $fin, $hora_inicio, $hora_fin) ) {
-//                    error_log("esta disponible");
+
                     $ok = $stmt->execute(array($inicio, $fin, $actividad, $fk_usuario, $fk_Sala, $estado, $observaciones, $responsable, $color));
                     if (!$ok) {
                         $mensaje .="$inicio--$fin\n";
-//                        error_log("no inserta");
+                    
                     } 
                 } else {
                     $mensaje .="$inicio--$fin\n";
